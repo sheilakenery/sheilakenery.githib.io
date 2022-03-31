@@ -1,7 +1,7 @@
 //This array holds pacman images
 const pacArray = [
-  ['./images/pacman1.png', './images/pacman2.png'],
-  ['./images/pacman3.png', './images/pacman4.png'],
+  ['pacman1.png', 'pacman2.png'],
+  ['pacman3.png', 'pacman4.png'],
 ];
 
 
