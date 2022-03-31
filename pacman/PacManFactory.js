@@ -1,99 +1,70 @@
-//This array holds pacman images
+var pos = 0;
 const pacArray = [
-  ['pacman1.png', 'pacman2.png'],
-  ['pacman3.png', 'pacman4.png'],
+  ['./images/PacMan1.png', './images/PacMan2.png'],
+  ['./images/PacMan3.png', './images/PacMan4.png'],
 ];
-
-
-//This array holds randomly generated pacmen as objects {position: {x: , y: } , velocity: {x: , y: } , direction, focus, newimg}
+var direction = 0;
 const pacMen = [];
 
-
-//This callback function randomly generates numbers for the initial velocity and position of pacmen
 function setToRandom(scale) {
   return {
     x: Math.random() * scale,
     y: Math.random() * scale,
   };
 }
-
-
-// Callback factory function to make a pacmen returns an object
+// Factory to make a PacMan
 function makePac() {
+  // returns an object with values scaled {x: 33, y: 21}
   let velocity = setToRandom(10);
   let position = setToRandom(200);
-  //Direction and Focus used to adjust movement
-  let direction = 0;
-  let focus = 0;
   // Add image to div id = game
   let game = document.getElementById('game');
   let newimg = document.createElement('img');
   newimg.style.position = 'absolute';
-  newimg.src = pacArray[direction][focus];
+  newimg.src = './images/PacMan1.png';
   newimg.width = 100;
   newimg.style.left = position.x;
   newimg.style.top = position.y;
   game.appendChild(newimg);
-
+  // new style of creating an object
   return {
     position,
     velocity,
-    direction,
-    focus,
-    newimg
+    newimg,
   };
 }
 
-
-//Function to make pacmen onclick of Add PacMan button, adds new pacman to pacMan array
-function makeOne() {
-  pacMen.push(makePac());
-}
-
-
-//Callback function for edge detection and direction adjustment
-function checkCollisions(item) {  
-  if (item.position.x + item.velocity.x + item.newimg.width > window.innerWidth) {
-    item.velocity.x = -item.velocity.x;
-    item.direction = 1;
-  }
-  if (item.position.x + item.velocity.x < 0) {
-    item.velocity.x = -item.velocity.x;
-    item.direction = 0;
-  }
-  if (item.position.y + item.velocity.y + item.newimg.height > window.innerHeight || item.position.y + item.velocity.y < 0) {
-    item.velocity.y = -item.velocity.y;
-  }
-  
-  
-  return item;
-}
-
-
-//Function to make pacmen move onclick of Start Game button
 function update() {
-  //Loop over pacmen array and move each one and move image in DOM
+  //loop over pacmen array and move each one and move image in DOM
   pacMen.forEach((item) => {
     checkCollisions(item);
     item.position.x += item.velocity.x;
     item.position.y += item.velocity.y;
-    
+
     item.newimg.style.left = item.position.x;
     item.newimg.style.top = item.position.y;
-
-    //This line makes the mouths open and close
-    item.focus = (item.focus + 1) % 2;
-
-    item.newimg.src =  pacArray[item.direction][item.focus];
   });
-  setTimeout(update, 80);
+  setTimeout(update, 20);
 }
 
+function checkCollisions(item) {
+  if (
+    item.position.x + item.velocity.x + item.newimg.width > window.innerWidth ||
+    item.position.x + item.velocity.x < 0
+  )
+    item.velocity.x = -item.velocity.x;
+  if (
+    item.position.y + item.velocity.y + item.newimg.height > window.innerHeight ||
+    item.position.y + item.velocity.y < 0
+  )
+    item.velocity.y = -item.velocity.y;
+}
 
+function makeOne() {
+  pacMen.push(makePac()); // add a new PacMan
+}
 
-
-
-//Don't change this line, exports functions to HTML
+//don't change this line
 if (typeof module !== 'undefined') {
-  module.exports = { makeOne, checkCollisions, update, pacMen };
+  module.exports = { checkCollisions, update, pacMen };
 }
